@@ -1,0 +1,11 @@
+# Ignore object files in src directory
+src/*.o
+
+# Ignore dependency files in src directory
+src/*.d
+
+# Ignore all files in the output directory
+output/*
+
+# Ignore all files in the .vscode directory
+.vscode/*
