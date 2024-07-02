@@ -26,9 +26,9 @@ void NonogramDisplay::displayField(const std::vector<std::vector<char>> &field, 
     int maxColHintHeight = 0;
     for (const auto &colHint : colHints)
     {
-        if (colHint.size() > maxColHintHeight)
+        if (static_cast<int>(colHint.size()) > maxColHintHeight)
         {
-            maxColHintHeight = colHint.size();
+            maxColHintHeight = static_cast<int>(colHint.size());
         }
     }
 
@@ -38,7 +38,7 @@ void NonogramDisplay::displayField(const std::vector<std::vector<char>> &field, 
         std::cout << std::setw(maxRowHintWidth + 1) << " "; // Adjust column hints alignment
         for (int col = 0; col < size; ++col)
         {
-            if (hintRow < colHints[col].size())
+            if (hintRow < static_cast<int>(colHints[col].size()))
             {
                 std::cout << colHints[col][hintRow] << " ";
             }
