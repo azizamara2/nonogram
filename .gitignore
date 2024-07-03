@@ -9,3 +9,6 @@ output/*
 
 # Ignore all files in the .vscode directory
 .vscode/*
+
+game_history.txt
+highscores.txt
