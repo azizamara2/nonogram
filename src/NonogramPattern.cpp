@@ -4,8 +4,21 @@
 
 std::vector<std::vector<char>> NonogramPattern::generateRandomPattern(int size, const std::string &difficulty)
 {
+    double fillPercentage;
+    if (difficulty == "easy")
+    {
+        fillPercentage = 0.9;
+    }
+    else if (difficulty == "medium")
+    {
+        fillPercentage = 0.7;
+    }
+    else if (difficulty == "hard")
+    {
+        fillPercentage = 0.5;
+    }
     std::vector<std::vector<char>> pattern(size, std::vector<char>(size, ' '));
-    int filledBoxes = size * size * 0.9; // Adjusted difficulty to fill more boxes
+    int filledBoxes = static_cast<int>(size * size * fillPercentage);
 
     for (int i = 0; i < filledBoxes; ++i)
     {

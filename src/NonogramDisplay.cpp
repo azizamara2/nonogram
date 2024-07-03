@@ -63,7 +63,7 @@ void NonogramDisplay::displayField(const std::vector<std::vector<char>> &field, 
     }
     std::cout << "--" << std::endl;
 
-    // Display the grid with row hints and horizontal/vertical lines
+    // Display the grid with hints
     for (int i = 0; i < size; ++i)
     {
         for (int hint : rowHints[i])
