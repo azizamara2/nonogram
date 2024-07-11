@@ -7,7 +7,7 @@
 class NonogramGame
 {
 public:
-    NonogramGame(int size, bool isTest, const std::string &language, const std::string &difficulty);
+    NonogramGame(int size, bool isTest, const std::string &difficulty);
 
     void displayMenu();
     void displayRules();
@@ -22,7 +22,6 @@ private:
     const int maxMistakes = 3;
     bool markPattern;
     bool gameWon;
-    std::string language;
     std::string difficulty = "easy";
     std::string playerName;
     std::vector<std::vector<char>> field;
