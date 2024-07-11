@@ -12,12 +12,12 @@
 #include <limits>
 using namespace std;
 
-NonogramGame::NonogramGame(int size, bool isTest, const std::string &language)
-    : size(isTest ? 5 : size), mistakes(0), maxMistakes(3), gameWon(false), language(language)
+NonogramGame::NonogramGame(int size, bool isTest, const std::string &language,const std::string &difficulty)
+    : size(isTest ? 5 : size), mistakes(0), maxMistakes(3), gameWon(false), language(language), difficulty(difficulty)
 {
     field = vector<vector<char>>(this->size, vector<char>(this->size, ' '));
     playfield = vector<vector<char>>(this->size, vector<char>(this->size, ' '));
-    pattern = NonogramPattern::generateRandomPattern(this->size, "easy");
+    pattern = NonogramPattern::generateRandomPattern(this->size, difficulty);
     rowHints = NonogramHints::calculateHints(pattern, true);
     colHints = NonogramHints::calculateHints(pattern, false);
 }
@@ -33,7 +33,8 @@ void NonogramGame::displayMenu()
         cout << "3. " << (language == "deutsch" ? "Computerspiel starten" : "Play Computer Game") << endl;
         cout << "4. " << (language == "deutsch" ? "Bestenliste anzeigen" : "Display High Score") << endl;
         cout << "5. " << (language == "deutsch" ? "Regeln anzeigen" : "Display Rules") << endl;
-        cout << "6. " << (language == "deutsch" ? "Beenden" : "Exit") << endl;
+        cout << "6. " << (language == "deutsch" ? "Regeln anzeigen" : "Settings") << endl;
+        cout << "7. " << (language == "deutsch" ? "Beenden" : "Exit") << endl;
         cout << (language == "deutsch" ? "Ihre Auswahl:" : "Enter your choice: ");
         cin >> choice;
 
@@ -41,7 +42,7 @@ void NonogramGame::displayMenu()
         {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << (language == "deutsch" ? "Ungültige Eingabe. Bitte geben Sie eine Zahl zwischen 1 und 6 ein." : "Invalid input. Please enter a number between 1 and 6.") << endl;
+            cout << (language == "deutsch" ? "Ungültige Eingabe. Bitte geben Sie eine Zahl zwischen 1 und 7 ein." : "Invalid input. Please enter a number between 1 and 7.") << endl;
             continue;
         }
 
@@ -52,7 +53,7 @@ void NonogramGame::displayMenu()
             break;
         case 2:
         {
-            NonogramGame testGame(5, true, language);
+            NonogramGame testGame(5, true, language,difficulty);
             testGame.playGame();
             break;
         }
@@ -66,6 +67,9 @@ void NonogramGame::displayMenu()
             displayRules();
             break;
         case 6:
+            gameSettings();
+            break;
+        case 7:
             cout << (language == "deutsch" ? "Spiel wird beendet. Auf Wiedersehen!" : "Exiting game. Goodbye!") << endl;
             break;
         default:
@@ -168,6 +172,49 @@ void NonogramGame::playGameComputer()
 
     saveGameHistory();
     updateHighScore();
+}
+
+void NonogramGame::gameSettings() 
+{   
+    int choice;
+    bool check=true;
+    do{
+        cout << (language == "deutsch" ? "Der Computer hat das Nonogram gelöst!" : "Select the difficulty!") << endl;
+        cout << "1. "<< (language == "deutsch" ? "ez" : "Easy") <<endl;
+        cout << "2. "<< (language == "deutsch" ? "med" : "Medium") <<endl;
+        cout << "3. "<< (language == "deutsch" ? "pro" : "Hard") <<endl;
+        cin >> choice;
+
+        if (cin.fail())
+        {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            cout << (language == "deutsch" ? "Ungültige Eingabe. Bitte geben Sie eine Zahl zwischen 1 und 3 ein." : "Invalid input. Please enter a number between 1 and 3.") << endl;
+            continue;
+        }
+
+        switch (choice)
+        {
+        case 1:
+            difficulty = "easy";
+            break;
+        case 2:
+            difficulty = "medium";
+            break;
+        case 3:
+            difficulty = "hard";
+            break;
+        default:
+        {
+            cout << (language == "deutsch" ? "Ungültige Auswahl. Bitte versuchen Sie es erneut." : "Invalid choice. Please try again.") << endl;
+            check=false;
+        }
+        }
+    } while (!check);
+    pattern = NonogramPattern::generateRandomPattern(this->size, difficulty);
+    rowHints = NonogramHints::calculateHints(pattern, true);
+    colHints = NonogramHints::calculateHints(pattern, false);
+    displayMenu();
 }
 
 void NonogramGame::saveGameHistory()

@@ -27,7 +27,7 @@ int main()
         language = "english";
     }
 
-    NonogramGame game(10, isTest, language);
+    NonogramGame game(10, isTest, language,"easy");
     game.displayMenu();
 
     return 0;

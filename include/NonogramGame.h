@@ -7,13 +7,14 @@
 class NonogramGame
 {
 public:
-    NonogramGame(int size, bool isTest, const std::string &language);
+    NonogramGame(int size, bool isTest, const std::string &language, const std::string &difficulty);
 
     void displayMenu();
     void displayRules();
     void playGame();
     void playGameComputer();
     void displayHighScore();
+    void gameSettings();
 
 private:
     int size;
@@ -22,6 +23,7 @@ private:
     bool markPattern;
     bool gameWon;
     std::string language;
+    std::string difficulty = "easy";
     std::string playerName;
     std::vector<std::vector<char>> field;
     std::vector<std::vector<char>> playfield;
