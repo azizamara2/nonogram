@@ -13,7 +13,7 @@
 using namespace std;
 
 NonogramGame::NonogramGame(int size, bool isTest, const std::string &language,const std::string &difficulty)
-    : size(isTest ? 5 : size), mistakes(0), maxMistakes(3), gameWon(false), language(language), difficulty(difficulty)
+    : size(isTest ? 5 : size), mistakes(0), maxMistakes(3), markPattern(true), gameWon(false), language(language), difficulty(difficulty)
 {
     field = vector<vector<char>>(this->size, vector<char>(this->size, ' '));
     playfield = vector<vector<char>>(this->size, vector<char>(this->size, ' '));
@@ -33,7 +33,7 @@ void NonogramGame::displayMenu()
         cout << "3. " << (language == "deutsch" ? "Computerspiel starten" : "Play Computer Game") << endl;
         cout << "4. " << (language == "deutsch" ? "Bestenliste anzeigen" : "Display High Score") << endl;
         cout << "5. " << (language == "deutsch" ? "Regeln anzeigen" : "Display Rules") << endl;
-        cout << "6. " << (language == "deutsch" ? "Regeln anzeigen" : "Settings") << endl;
+        cout << "6. " << (language == "deutsch" ? "Spieleinstellungen" : "Settings") << endl;
         cout << "7. " << (language == "deutsch" ? "Beenden" : "Exit") << endl;
         cout << (language == "deutsch" ? "Ihre Auswahl:" : "Enter your choice: ");
         cin >> choice;
@@ -75,7 +75,7 @@ void NonogramGame::displayMenu()
         default:
             cout << (language == "deutsch" ? "Ungültige Auswahl. Bitte versuchen Sie es erneut." : "Invalid choice. Please try again.") << endl;
         }
-    } while (choice != 6);
+    } while (choice != 7);
 }
 
 void NonogramGame::displayRules()
@@ -97,28 +97,73 @@ void NonogramGame::playGame()
     while (mistakes < maxMistakes && !gameWon)
     {
         NonogramDisplay::displayField(field, rowHints, colHints);
-        cout << (language == "deutsch" ? "Geben Sie Koordinaten (Zeile Spalte) zum Markieren ein: " : "Enter coordinates (row col) to mark: ");
-        int row, col;
-        cin >> row >> col;
+        cout << (language == "deutsch" ? "Markierungsmodus" : "Marking mode: ") << (markPattern ? "Muster" : "Leere-Stellen-Markieren") << endl;
+        cout << (language == "deutsch" ? "Geben Sie Koordinaten (Zeile Spalte) zum Markieren ein: " : "Enter coordinates (row col) to mark or 'toggle' to switch mode: ");
+        string input;
+        cin >> input;
 
-        if (row < 0 || row >= size || col < 0 || col >= size)
+        if (input == "toggle")
         {
-            cout << (language == "deutsch" ? "Ungültige Koordinaten. Bitte geben Sie gültige Zahlen für Zeile und Spalte ein." : "Invalid coordinates. Please enter valid row and column numbers.") << endl;
+            markPattern = !markPattern;
             continue;
         }
 
-        if (pattern[row][col] == '#')
+        int row,col;
+        
+        try
         {
-            field[row][col] = '#';
-            playfield[row][col] = '#';
+            row = stoi(input);
+            cin >> input;
+            col = stoi(input);
+        }
+
+        catch (invalid_argument &e)
+        {
+            cout << (language == "deutsch" ? "Ungültige Koordinaten. Bitte geben Sie gültige Zahlen für Zeile und Spalte ein." : "Invalid coordinates. Please enter valid row and column numbers or 'toggle'.") << endl;
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            continue;
+        }
+        catch (out_of_range &e)
+        {
+            cout << (language == "deutsch" ? "Ungültige Koordinaten. Bitte geben Sie gültige Zahlen für Zeile und Spalte ein." : "Invalid coordinates. Please enter valid row and column numbers or 'toggle'.") << endl;
+            continue;
+        }
+
+        if (row < 0 || row >= size || col < 0 || col >= size)
+        {
+            cout << (language == "deutsch" ? "Ungültige Koordinaten. Bitte geben Sie gültige Zahlen für Zeile und Spalte ein." : "Invalid coordinates. Please enter valid row and column numbers or 'toggle'.") << endl;
+            continue;
+        }
+
+        if (markPattern)
+        {
+            if (pattern[row][col] == '#')
+            {
+                field[row][col] = '#';
+                playfield[row][col] = '#';
+            }
+            else
+            {
+                field[row][col] = 'X';
+                ++mistakes;
+                cout << "Mistake " << mistakes << "/" << maxMistakes << endl;
+            }
         }
         else
         {
-            field[row][col] = 'X';
-            ++mistakes;
-            cout << (language == "deutsch" ? "Fehler " : "Mistake ") << mistakes << "/" << maxMistakes << endl;
+            if (pattern[row][col] == ' ')
+            {
+                field[row][col] = ' ';
+                playfield[row][col] = ' ';
+            }
+            else
+            {
+                field[row][col] = 'X';
+                ++mistakes;
+                cout << "Mistake " << mistakes << "/" << maxMistakes << endl;
+            }
         }
-
         gameWon = (playfield == pattern);
     }
 
@@ -130,7 +175,7 @@ void NonogramGame::playGame()
     {
         cout << (language == "deutsch" ? "Spiel vorbei. Sie haben zu viele Fehler gemacht." : "Game over. You've made too many mistakes.") << endl;
     }
-
+    NonogramDisplay::displayField(pattern, rowHints, colHints);
     saveGameHistory();
     updateHighScore();
 }
@@ -179,10 +224,11 @@ void NonogramGame::gameSettings()
     int choice;
     bool check=true;
     do{
-        cout << (language == "deutsch" ? "Der Computer hat das Nonogram gelöst!" : "Select the difficulty!") << endl;
-        cout << "1. "<< (language == "deutsch" ? "ez" : "Easy") <<endl;
-        cout << "2. "<< (language == "deutsch" ? "med" : "Medium") <<endl;
-        cout << "3. "<< (language == "deutsch" ? "pro" : "Hard") <<endl;
+        cout << (language == "deutsch" ? "Wählen Sie den Schwierigkeitsgrad!!" : "Select the difficulty!") << endl;
+        cout << "1. "<< (language == "deutsch" ? "Einfach" : "Easy") <<endl;
+        cout << "2. "<< (language == "deutsch" ? "Mittel" : "Medium") <<endl;
+        cout << "3. "<< (language == "deutsch" ? "Schwer" : "Hard") <<endl;
+        cout << "Ihre Auswahl:";
         cin >> choice;
 
         if (cin.fail())
