@@ -13,7 +13,7 @@
 using namespace std;
 
 NonogramGame::NonogramGame(int size, bool isTest,const std::string &difficulty)
-    : size(isTest ? 5 : size), mistakes(0), maxMistakes(3), gameWon(false), difficulty(difficulty)
+    : size(isTest ? 5 : size), mistakes(0), maxMistakes(3), markPattern(true), gameWon(false), difficulty(difficulty)
 {
     field = vector<vector<char>>(this->size, vector<char>(this->size, ' '));
     playfield = vector<vector<char>>(this->size, vector<char>(this->size, ' '));
@@ -75,7 +75,7 @@ void NonogramGame::displayMenu()
         default:
             cout << "Ungültige Auswahl. Bitte versuchen Sie es erneut."<< endl;
         }
-    } while (choice != 6);
+    } while (choice != 7);
 }
 
 void NonogramGame::displayRules()
@@ -101,7 +101,6 @@ void NonogramGame::playGame()
         cout << "Geben Sie Koordinaten (Zeile Spalte) zum Markieren ein: ";
         string input;
         cin >> input;
-
         if (input == "toggle")
         {
             markPattern = !markPattern;

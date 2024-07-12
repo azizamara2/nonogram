@@ -1,6 +1,8 @@
 #include "NonogramHistory.h"
 #include <fstream>
 #include <iostream>
+#include <sstream>
+#include <map>
 
 void NonogramHistory::saveGameHistory(const std::string &playerName, const std::vector<std::vector<char>> &field)
 {
