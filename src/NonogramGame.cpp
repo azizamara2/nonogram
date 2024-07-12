@@ -97,7 +97,7 @@ void NonogramGame::playGame()
     while (mistakes < maxMistakes && !gameWon)
     {
         NonogramDisplay::displayField(field, rowHints, colHints);
-        cout << (language == "deutsch" ? "Markierungsmodus" : "Marking mode: ") << (markPattern ? "Muster" : "Leere-Stellen-Markieren") << endl;
+        cout << (language == "deutsch" ? "Markierungsmodus: " : "Marking mode: ") << (markPattern ? "Muster" : "Leere-Stellen-Markieren") << endl;
         cout << (language == "deutsch" ? "Geben Sie Koordinaten (Zeile Spalte) zum Markieren ein: " : "Enter coordinates (row col) to mark or 'toggle' to switch mode: ");
         string input;
         cin >> input;

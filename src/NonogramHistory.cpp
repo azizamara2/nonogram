@@ -22,11 +22,24 @@ void NonogramHistory::saveGameHistory(const std::string &playerName, const std::
 }
 
 void NonogramHistory::updateHighScore(const std::string &playerName)
-{
+{    std::string fileName = "highscores.txt";
 
-    std::ifstream inputFile("highscores.txt");
+    // Ensure the file exists by creating it if it does not
+    std::ifstream inputFile(fileName);
     if (!inputFile.is_open()) {
-        std::cerr << "Error opening file: " << "highscores.txt" << std::endl;
+        std::ofstream createFile(fileName);
+        if (!createFile) {
+            std::cerr << "Error creating file: " << fileName << std::endl;
+            return;
+        }
+        createFile.close();
+    }
+    inputFile.close();
+
+    // Reopen the file for reading
+    inputFile.open(fileName);
+    if (!inputFile.is_open()) {
+        std::cerr << "Error opening file: " << fileName << std::endl;
         return;
     }
 
@@ -43,14 +56,15 @@ void NonogramHistory::updateHighScore(const std::string &playerName)
         highScores[name] = score;
     }
     inputFile.close();
+
     if (highScores.find(playerName) == highScores.end()) {
         highScores[playerName] = 0;
     }
     highScores[playerName] += 1;
 
-    std::ofstream outputFile("highscores.txt");
+    std::ofstream outputFile(fileName);
     if (!outputFile.is_open()) {
-        std::cerr << "Error opening file for writing: " << "highscores.txt" << std::endl;
+        std::cerr << "Error opening file for writing: " << fileName << std::endl;
         return;
     }
 
