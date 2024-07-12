@@ -97,9 +97,38 @@ void NonogramGame::playGame()
     while (mistakes < maxMistakes && !gameWon)
     {
         NonogramDisplay::displayField(field, rowHints, colHints);
+        cout << "Markierungsmodus: "  << (markPattern ? "Muster" : "Leere-Stellen-Markieren") << endl;
         cout << "Geben Sie Koordinaten (Zeile Spalte) zum Markieren ein: ";
-        int row, col;
-        cin >> row >> col;
+        string input;
+        cin >> input;
+
+        if (input == "toggle")
+        {
+            markPattern = !markPattern;
+            continue;
+        }
+
+        int row,col;
+        
+        try
+        {
+            row = stoi(input);
+            cin >> input;
+            col = stoi(input);
+        }
+
+        catch (invalid_argument &e)
+        {
+            cout <<"Ungültige Koordinaten. Bitte geben Sie gültige Zahlen für Zeile und Spalte ein." << endl;
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            continue;
+        }
+        catch (out_of_range &e)
+        {
+            cout << "Ungültige Koordinaten. Bitte geben Sie gültige Zahlen für Zeile und Spalte ein." << endl;
+            continue;
+        }
 
         if (row < 0 || row >= size || col < 0 || col >= size)
         {
