@@ -92,8 +92,6 @@ clean:
 	$(RM) $(OUTPUTMAIN)
 	$(RM) $(call FIXPATH,$(OBJECTS))
 	$(RM) $(call FIXPATH,$(DEPS))
-	$(RM) game_history.txt
-	$(RM) highscores.txt
 	@echo Cleanup complete!
 
 run: all

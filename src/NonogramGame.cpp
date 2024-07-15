@@ -10,7 +10,18 @@
 #include <string>
 #include <vector>
 #include <limits>
+
 using namespace std;
+
+#ifdef _WIN32
+    void clearScreen() {
+        system("cls");
+    }
+#else
+    void clearScreen() {
+        system("clear");
+    }
+#endif
 
 NonogramGame::NonogramGame(int size, bool isTest,const std::string &difficulty)
     : size(isTest ? 5 : size), mistakes(0), maxMistakes(3), markPattern(true), gameWon(false), difficulty(difficulty)
@@ -95,10 +106,11 @@ void NonogramGame::playGame()
     cin >> playerName;
     mistakes = 0;
     while (mistakes < maxMistakes && !gameWon)
-    {
+    {   
+        clearScreen();
         NonogramDisplay::displayField(field, rowHints, colHints);
         cout << "Markierungsmodus: "  << (markPattern ? "Muster" : "Leere-Stellen-Markieren") << endl;
-        cout << "Geben Sie Koordinaten (Zeile Spalte) zum Markieren ein: ";
+        cout << "Geben Sie Koordinaten (Zeile Spalte) zum Markieren ein oder geben Sie 'toggle' ein, um den Markierungsmodus zu ändern: ";
         string input;
         cin >> input;
         if (input == "toggle")
@@ -143,8 +155,10 @@ void NonogramGame::playGame()
         else
         {
             field[row][col] = 'X';
-            ++mistakes;
-            cout << "Fehler " << mistakes << "/" << maxMistakes << endl;
+            if (markPattern) {
+                ++mistakes;
+                cout << "Fehler "<< mistakes << "/" << maxMistakes << endl; 
+            }
         }
 
         gameWon = (playfield == pattern);
@@ -167,6 +181,7 @@ void NonogramGame::playGameComputer()
 {
     while (mistakes < maxMistakes && !gameWon)
     {
+        clearScreen();
         NonogramDisplay::displayField(field, rowHints, colHints);
 
         // Computer logic to play the game automatically can be added here
@@ -182,8 +197,10 @@ void NonogramGame::playGameComputer()
         else
         {
             field[row][col] = 'X';
-            ++mistakes;
-            cout << "Fehler "<< mistakes << "/" << maxMistakes << endl;
+            if (markPattern) {
+                ++mistakes;
+                cout << "Fehler "<< mistakes << "/" << maxMistakes << endl; 
+            }
         }
 
         gameWon = (playfield == pattern);
